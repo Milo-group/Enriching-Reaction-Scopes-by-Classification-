@@ -724,16 +724,17 @@ four_three <- simi.sampler(sampl.dat, 4, 3)
 
 ## Back to model search
 
-# MP.models.gauss.union50 <- sub_model_log_McFadden(data = data50[c(three,
-#                                                                   union(two, two_three),
-#                                                                   union(one, one_three),
-#                                                                   union(four, four_three)),],
-#                                                 min = 4,
-#                                                 max = 4)
+MP.models.gauss.union50 <- sub_model_log_McFadden(data = data50[c(three,
+                                                                   union(two, two_three),
+                                                                   union(one, one_three),
+                                                                   union(four, four_three)),],
+                                                 min = 4,
+                                                 max = 4)
 
 
-MP.models.gauss.union50 <- data.frame(data.table::fread("fingerprints_model_4_features.csv"),
-                                      check.names = F)[, -1]
+#MP.models.gauss.union50 <- data.frame(data.table::fread("fingerprints_model_4_features.csv"),
+#                                      check.names = F)[, -1]
+
 test.data <- data50[c(three,
                                                                   union(two, two_three),
                                                                   union(one, one_three),
