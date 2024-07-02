@@ -1,0 +1,11 @@
+"","formula","McFadden R2"
+"1","`class` ~ `fr_NH0` + `fr_aldehyde` + `fr_amide` + `fr_para_hydroxylation`",0.766
+"2","`class` ~ `fr_Ar_N` + `fr_aldehyde` + `fr_amide` + `fr_para_hydroxylation`",0.764
+"3","`class` ~ `fr_NH0` + `fr_aldehyde` + `fr_amide` + `fr_pyridine`",0.762
+"4","`class` ~ `fr_aldehyde` + `fr_amide` + `fr_para_hydroxylation` + `fr_pyridine`",0.755
+"5","`class` ~ `fr_Ar_N` + `fr_NH2` + `fr_aldehyde` + `fr_amide`",0.738
+"6","`class` ~ `fr_C_O` + `fr_NH0` + `fr_NH1` + `fr_aldehyde`",0.737
+"7","`class` ~ `fr_C_O_noCOO` + `fr_NH0` + `fr_NH1` + `fr_aldehyde`",0.737
+"8","`class` ~ `fr_NH0` + `fr_NH1` + `fr_aldehyde` + `fr_amide`",0.737
+"9","`class` ~ `fr_NH0` + `fr_NH1` + `fr_aldehyde` + `fr_pyridine`",0.737
+"10","`class` ~ `fr_NH0` + `fr_NH2` + `fr_aldehyde` + `fr_amide`",0.737
