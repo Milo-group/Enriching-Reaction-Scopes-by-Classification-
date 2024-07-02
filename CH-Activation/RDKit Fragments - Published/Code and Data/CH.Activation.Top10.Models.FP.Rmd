@@ -739,7 +739,7 @@ MP.models.gauss.union50 <- sub_model_log_McFadden(data = data50[c(three,
 
 
 knitr::kable(MP.models.gauss.union50) # present list of models
-write.csv(MP.models.gauss.union50, 'fingerprints_model_4_features.csv')
+write.csv(MP.models.gauss.union50, 'fragments_model_4_features.csv')
 
 ```
 
