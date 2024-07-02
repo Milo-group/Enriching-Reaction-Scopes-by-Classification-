@@ -716,6 +716,45 @@ simi.sampler <- function(data, class, compare.with = 0, plot = F, sample.size = 
 
 ### Model Search
 
+``` {r Model Search}
+data <- data.frame(data.table::fread('LEC_Data.csv'), check.names = F) # Import data
+  
+row.names(data) <- data[,2]
+data$class <- as.factor(data$class)
+kfold.data <- data[,-c(1:2)] # Remove name and tag
+
+one <- simi.sampler(kfold.data, 1)
+two <- simi.sampler(kfold.data, 2)
+three <- simi.sampler(kfold.data, 3)
+one_three <- simi.sampler(kfold.data, 1, 3)
+two_three <- simi.sampler(kfold.data, 2, 3)
+
+
+uni_similarties <- c(union(one, one_three),
+                     union(two, two_three),
+                     three)
+
+models <- sub_model_ordinal(data = kfold.data[uni_similarties, ],
+                                               min = 4,
+                                               max = 4)
+  
+#models <- data.frame(data.table::fread('4_features_models_ordinal.csv'))[, -1]
+ 
+knitr::kable(models) # present list of models
+#write.csv(models, '4_features_models_ordinal.csv')
+
+test.data <- kfold.data[uni_similarties, ]
+Test.set <- kfold.data[-uni_similarties, ]
+
+start <- c(rep(0, 5), 1)
+
+Predictions_data <- data.frame(data.table::fread('LEC_External_Data.csv'))
+RN <- Predictions_data$V1
+Predictions_data <- Predictions_data[,-1]
+Predictions_data$class <- as.factor(Predictions_data$class)
+row.names(Predictions_data) <- RN
+```
+
 ### 1st Place
 ``` {r 1.1}
 test.form <- models[1, 1]

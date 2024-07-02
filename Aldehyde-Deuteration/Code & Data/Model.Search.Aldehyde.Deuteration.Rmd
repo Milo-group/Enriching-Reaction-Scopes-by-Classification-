@@ -717,9 +717,8 @@ simi.sampler <- function(data, class, compare.with = 0, plot = F, sample.size = 
 ### Model Search
 
 ``` {r Model Search}
-data <- data.table::fread('LEC_Data.csv', header = T) # Import data
-  
-data <- data.frame(data)
+data <- data.frame(data.table::fread('LEC_Data.csv'), check.names = F) # Import data
+
 row.names(data) <- data[,2]
 data$class <- as.factor(data$class)
 kfold.data <- data[,-c(1:2)] # Remove name and tag
@@ -735,11 +734,11 @@ uni_similarties <- c(union(one, one_three),
                      union(two, two_three),
                      three)
 
-# models <- sub_model_ordinal(data = kfold.data[uni_similarties, ],
-#                                                min = 4,
-#                                                max = 4)
+models <- sub_model_ordinal(data = kfold.data[uni_similarties, ],
+                                               min = 4,
+                                               max = 4)
   
-models <- data.frame(data.table::fread('4_features_models_ordinal.csv'))[, -1]
+#models <- data.frame(data.table::fread('4_features_models_ordinal.csv'))[, -1]
  
 knitr::kable(models) # present list of models
 #write.csv(models, '4_features_models_ordinal.csv')
