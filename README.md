@@ -75,10 +75,16 @@ Train.set <- data[similarties, ]
 Test.set <- data[-similarties, ]
 
 # Load and organize external validation data
-Prediction.set <- rxn.cond.class::example_validation_data
+External.set <- rxn.cond.class::example_validation_data
+RN <- External.set$V1
+External.set <- External.set[,-1]
+External.set$class <- as.factor(External.set$class)
+row.names(External.set) <- RN
+
+# Load and organize prediction of new substrates data
+Prediction.set <- rxn.cond.class::example_prediction_data
 RN <- Prediction.set$V1
 Prediction.set <- Prediction.set[,-1]
-Prediction.set$class <- as.factor(Prediction.set$class)
 row.names(Prediction.set) <- RN
 ```
 
