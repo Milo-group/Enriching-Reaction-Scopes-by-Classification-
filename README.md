@@ -173,7 +173,7 @@ prob.heatmap(test, Prediction.set,
              conformation = '1. 1st Place')
 ```
 
-### Prediction of New Substartes
+#### Prediction of New Substartes
 
 ```r
 knitr::kable(cbind(predict(test, Prediction.set, 'probs') * 100,
@@ -269,7 +269,7 @@ prob.heatmap(test, Prediction.set,
              conformation = '1. 1st Place')
 ```
 
-### Prediction of New Substartes
+#### Prediction of New Substartes
 
 ```r
 knitr::kable(cbind(predict(test, Prediction.set, 'probs') * 100,
