@@ -1,14 +1,25 @@
 
-# `rxn.cond.class` - Classify Chemical Reaction Conditions
+# Classify Chemical Reaction Conditions with the R Package `rxn.cond.class`
 
-`rxn.cond.class` is an R package designed to classify and visualize chemical reaction conditions using both ordinal and non-ordinal models. It includes functionality for similarity-based sampling, model ranking, model evaluation, and heatmap visualization for model performance.
+`rxn.cond.class` is an R package designed to classify and visualize logistic regreesion classification models for chemical reaction conditions using both ordinal and non-ordinal models. It includes functionality for similarity-based sampling, model ranking, model evaluation, and heatmap visualization for model performance.
 
 ## Installation
 
 To install the development version from GitHub, use:
 
 ```r
-devtools::install_github("your-username/rxn.cond.class")
+devtools::install_github("https://github.com/Milo-group/Enriching-Reaction-Scopes-by-Classification-.git")
+
+or
+
+install.packages('remotes', repos = getCRANmirrors()[1,"URL"])
+remotes::install_github("https://github.com/Milo-group/Enriching-Reaction-Scopes-by-Classification-.git")
+```
+
+Load package
+
+```r
+library(rxn.cond.class)
 ```
 
 ## Package Overview
