@@ -101,12 +101,8 @@ test.form <- models.ordinal[1, 1]
 num.of.vars <- stringi::stri_count(test.form, fixed = '+')
 start <- c(rep(0, num.of.vars + 2), 1)
 
-# Train the ordinal logistic regression model
-test <- MASS::polr(test.form,
-                   data = Train.set,
-                   Hess = TRUE, 
-                   control = list(maxit = 100), 
-                   start = start)
+# Train model
+test <- fit_polr(formula = test.form, data = Train.set)
 
 # Cross-validation (smallest-group's-fold)
 k.fold.log.iter(formula = test.form, 
@@ -177,6 +173,12 @@ prob.heatmap(test, Prediction.set,
              conformation = '1. 1st Place')
 ```
 
+### Prediction of New Substartes
+
+```r
+knitr::kable(cbind(predict(test, Prediction.set, 'probs') * 100,
+      predicted_class = predict(test, Prediction.set, 'class')))
+```
 ### Non-ordinal Model Example
 
 #### Model Ranking
@@ -265,6 +267,13 @@ ct.plot(class.table,
 prob.heatmap(test, Prediction.set, 
              plot.title = 'External Validation', 
              conformation = '1. 1st Place')
+```
+
+### Prediction of New Substartes
+
+```r
+knitr::kable(cbind(predict(test, Prediction.set, 'probs') * 100,
+      predicted_class = predict(test, Prediction.set, 'class')))
 ```
 
 ## License
