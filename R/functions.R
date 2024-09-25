@@ -1038,3 +1038,100 @@ simi.sampler <- function(data, class,
 
   return(keep)  # Return the indices of samples to keep
 }
+
+#' Fit a Proportional Odds Logistic Regression Model
+#'
+#' @description
+#' `fit_polr_model` fits a proportional odds logistic regression model using the `MASS::polr` function.
+#' The function attempts to fit the model with a provided formula, data, and starting coefficient values,
+#' and includes error handling to ensure robustness.
+#'
+#' @param formula A formula representing the model structure. This should be in the standard R formula notation.
+#' @param data A data frame containing the variables in the model.
+#' @param start_vector A numeric vector of starting values for the model coefficients.
+#'
+#' @return A list with two elements:
+#' \describe{
+#'   \item{success}{Logical, indicating whether the model fit was successful (TRUE) or not (FALSE).}
+#'   \item{model}{If `success` is TRUE, the fitted `polr` model object. If `success` is FALSE, this will be `NULL`.}
+#'   \item{error}{If `success` is FALSE, the error message produced during the fitting process.}
+#' }
+#'
+#' @details
+#' The function internally calls `MASS::polr` to fit the model. It includes error handling using `tryCatch`
+#' to capture and return any errors that occur during model fitting.
+#'
+#' @examples
+#' \dontrun{
+#'   # Example usage:
+#'   data(iris)
+#'   iris$Species <- as.factor(iris$Species)
+#'   formula <- Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width
+#'   start_vector <- c(0.1, 0.1, 0.1, 0.1)
+#'   fit <- fit_polr_model(formula, iris, start_vector)
+#'   if (fit$success) {
+#'     print(summary(fit$model))
+#'   } else {
+#'     print(fit$error)
+#'   }
+#' }
+#'
+#' @seealso
+#' \code{\link[MASS]{polr}}
+#'
+#' @export
+fit_polr_model <- function(formula, data, start_vector) {
+  tryCatch({
+    model <- MASS::polr(formula, data = data, Hess = TRUE, start = start_vector, control = list(maxit = 100))
+    return(list(success = TRUE, model = model))
+  }, error = function(e) {
+    return(list(success = FALSE, error = e))
+  })
+}
+
+#' Fit a Proportional Odds Logistic Regression (POLR) Model
+#'
+#' This function iteratively fits a proportional odds logistic regression (POLR) model using the
+#' provided formula and dataset. If the initial model fails to converge, the function adjusts the
+#' starting coefficient vector and retries fitting the model until it succeeds.
+#'
+#' @param formula A formula specifying the model structure (e.g., `class ~ var1 + var2 + ...`).
+#' @param data A data frame containing the variables in the formula and the response variable.
+#' @return A fitted `polr` model object.
+#'
+#' @details
+#' This function calls \code{fit_polr_model()} to fit a \code{MASS::polr()} model. If the model
+#' fails to converge, it expands the starting coefficient vector and retries fitting the model
+#' in a while loop until successful convergence is achieved.
+#'
+#' @examples
+#' # Example usage:
+#' \dontrun{
+#' data(example_data)
+#' fit_polr(class ~ var1 + var2, data = example_data)
+#' }
+#'
+#' @seealso \code{\link[MASS]{polr}}, \code{\link{fit_polr_model}}
+#' @export
+fit_polr <- function(formula, data) {
+  num.of.vars <- stringi::stri_count(formula, fixed = '+')
+  start <- c(rep(0, num.of.vars + 2), 1)
+
+  # Flag to control the loop
+  success <- FALSE
+
+  # While loop to keep trying until the model fits successfully
+  while (!success) {
+    result <- fit_polr_model(formula, data, start)
+
+    if (result$success) {
+      success <- TRUE
+      test <- result$model
+    } else {
+      # Modify the start vector by adding another 0
+      start <- c(0, start)
+    }
+  }
+  return(test)
+}
+

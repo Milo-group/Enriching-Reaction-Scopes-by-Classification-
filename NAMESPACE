@@ -2,6 +2,8 @@
 
 export(.onLoad)
 export(ct.plot)
+export(fit_polr)
+export(fit_polr_model)
 export(k.fold.log.cv)
 export(k.fold.log.iter)
 export(mod.info)
