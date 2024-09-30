@@ -1,4 +1,4 @@
-``` {r Model Search}
+```r
 library(rxn.cond.class)
 
 # Import training data from a CSV file
