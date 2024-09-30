@@ -2,7 +2,7 @@
 library(rxn.cond.class)
 
 # Import training data from a CSV file
-data_bin <- data.frame(data.table::fread("Training_Data_rdkit_stereoelectronic.csv"), check.names = F) 
+data_bin <- data.frame(data.table::fread("Training_Data_rdkit_stereoelectronic.csv")) 
 
 # Set the first column as row names
 row.names(data_bin) <- data_bin[,1]  
