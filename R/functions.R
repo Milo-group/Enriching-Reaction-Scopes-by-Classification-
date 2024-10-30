@@ -732,7 +732,8 @@ ct.plot <- function(class.table, plot.title, conformation) {
               size = 4, vjust = .5, fontface = "bold", alpha = 1) +  # Text labels on tiles
     scale_fill_manual(values = c(True = '#6CAE75', False = '#8A0526',
                                  Size = '#FCDEBE', Precision = '#DCAB6B',
-                                 Accuracy = '#247BA0')) +  # Color mapping
+                                 Accuracy = '#247BA0'),
+                      guide = guide_legend(title = NULL)) +  # Color mapping
     scale_alpha(guide = "none") +  # Hide prop legend
     theme(axis.line = element_blank(),
           panel.grid.major = element_blank(),
@@ -744,7 +745,9 @@ ct.plot <- function(class.table, plot.title, conformation) {
           axis.title.y = element_blank(),
           axis.title.x = element_blank(),
           axis.ticks = element_blank(),
-          legend.position = "bottom")  # Move legend to bottom
+          legend.position = "bottom",
+          legend.text = element_text(size = 8),  # Smaller legend text
+          legend.key.size = unit(0.5, "lines"))  # Move legend to bottom
 
   # Extract recall for true classifications
   true.recall <- data.frame(ct$prop[ct$Exp == ct$Pred & ct$Exp != 'total'])
@@ -870,10 +873,10 @@ prob.heatmap <- function(model, data, plot.title, conformation) {
     ggplot2::coord_fixed(ratio = 0.5) +  # Adjust cell height with ratio
     ggplot2::geom_text(data = long[long$variable != 'Exp',],
                        ggplot2::aes(label = value)) +  # Display probability values in each cell
-    ggplot2::scale_fill_gradient(name = "% probability",
-                                 low = "#FFFFFF",
+    ggplot2::scale_fill_gradient(low = "#FFFFFF",
                                  high = "dodgerblue2",
-                                 guide = ggplot2::guide_colorbar(frame.colour = "black",
+                                 guide = ggplot2::guide_colorbar(title = NULL,
+                                                                 frame.colour = "black",
                                                                  ticks.colour = "black")) +  # Set fill gradient for probabilities
     ggplot2::theme(axis.text.x = ggplot2::element_text(size = 10, face = 'bold'),
                    axis.text.y = ggplot2::element_text(size = 10, face = 'bold',
@@ -886,7 +889,9 @@ prob.heatmap <- function(model, data, plot.title, conformation) {
                    panel.border = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(),
                    axis.ticks = ggplot2::element_blank(),
-                   legend.position = "bottom") +  # Place legend at bottom of plot
+                   legend.position = "bottom",
+                   legend.text = element_text(size = 5),  # Smaller legend text
+                   legend.key.size = unit(0.75, "lines")) +  # Place legend at bottom of plot
     ggplot2::scale_x_discrete(position = "top", limits = levels(long$variable)) +  # Display x-axis labels at top
     ggplot2::geom_tile(data = long[long$variable == 'Exp',],
                        alpha = 0, inherit.aes = F,
