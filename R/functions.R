@@ -733,6 +733,7 @@ ct.plot <- function(class.table, plot.title, conformation) {
     scale_fill_manual(values = c(True = '#6CAE75', False = '#8A0526',
                                  Size = '#FCDEBE', Precision = '#DCAB6B',
                                  Accuracy = '#247BA0')) +  # Color mapping
+    scale_alpha(guide = "none") +  # Hide prop legend
     theme(axis.line = element_blank(),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -742,7 +743,8 @@ ct.plot <- function(class.table, plot.title, conformation) {
           axis.text.y = element_text(size = 9, face = 'bold'),
           axis.title.y = element_blank(),
           axis.title.x = element_blank(),
-          axis.ticks = element_blank())
+          axis.ticks = element_blank(),
+          legend.position = "bottom")  # Move legend to bottom
 
   # Extract recall for true classifications
   true.recall <- data.frame(ct$prop[ct$Exp == ct$Pred & ct$Exp != 'total'])
@@ -789,39 +791,53 @@ ct.plot <- function(class.table, plot.title, conformation) {
 #' @export
 #' @import ggplot2
 prob.heatmap <- function(model, data, plot.title, conformation) {
-  classes <- length(unique(data$class))
-  pred <- predict(model,newdata = data, 'class')
+  # Determine number of classes
+  classes <- length(model$lev)
+
+  # Generate predictions and probabilities
+  pred <- predict(model, newdata = data, 'class')
   r.w <- pred == data$class
-  probs <- predict(model, newdata = data, 'probs') * 100
+  probs <- predict(model, newdata = data, 'probs') * 100  # Convert to percentage
+
+  # Adjust probabilities if binary classification
+  if (dim(data.frame(probs))[2] == 1) {
+    probs <- cbind(100 - data.frame(probs), data.frame(probs))
+  }
+
+  # Create data frame with expected and predicted classes, and correct/wrong classification
   verif <- data.frame(cbind(data$class, pred, r.w, probs, rep(NA, nrow(probs))))
   row.names(verif) <- row.names(probs)
-  colnames(verif)[c(1, dim(verif)[2])] <- c('Exp','color')
+  colnames(verif)[c(1, dim(verif)[2])] <- c('Exp', 'color')  # Rename columns
+
+  # Assign colors based on correct classification, second-highest probability, or incorrect prediction
   for (i in 1:dim(verif)[1]) {
-    second <- sort(as.numeric(verif[i, 4:(4 + classes)]), decreasing = T)[2]
+    second <- sort(as.numeric(verif[i, 4:(4 + classes)]), decreasing = T)[2]  # Get 2nd highest probability
     where.is.sec <- which(as.numeric(verif[i, 4:(4 + (classes - 1))]) == second)
     if (verif$r.w[i] == 1) {
-      verif$color[i] <- "#66a180" # green
+      verif$color[i] <- "#66a180"  # Green for correct predictions
     } else {
       if (as.numeric(verif$Exp[i]) == where.is.sec) {
-        verif$color[i] <- 'tan1'
+        verif$color[i] <- 'tan1'  # Tan if second-highest probability matches actual class
       } else {
-        verif$color[i] <- '#d1505b'
+        verif$color[i] <- '#d1505b'  # Red for incorrect prediction
       }
     }
   }
 
+  # Prepare data for plotting
   pro.df <- data.frame(probs)
   pro.df <- tibble::rownames_to_column(pro.df)
-  pro.df[, 1] <- factor(pro.df[, 1], levels = pro.df[, 1])
+  pro.df[, 1] <- factor(pro.df[, 1], levels = pro.df[, 1])  # Order row names as factors
   pro.df[, (dim(pro.df)[2] + 1)] <- as.numeric(data$class)
-  colnames(pro.df) <- c('Name', model$lev, 'Exp')
+  colnames(pro.df) <- c('Name', model$lev, 'Exp')  # Rename columns for plotting
   row.names(pro.df) <- row.names(probs)
 
+  # Convert data to long format for ggplot
   long <- reshape2::melt(pro.df, id.vars = 'Name')
-  long[,3] <- round(long[,3], digits = 0)
-  long <- dplyr::mutate(long, exp_shape = rep(NA,nrow(long)))
+  long[,3] <- round(long[,3], digits = 0)  # Round probabilities to integers for display
+  long <- dplyr::mutate(long, exp_shape = rep(NA, nrow(long)))  # Add column for expected shapes
 
-
+  # Assign expected shapes based on class
   for (i in 1:nrow(long)) {
     for (j in 1:classes) {
       if (long$variable[i] == 'Exp' & long$value[i] == j) {
@@ -829,34 +845,39 @@ prob.heatmap <- function(model, data, plot.title, conformation) {
       }
     }
   }
+
+  # Prepare color vector for labels
   col_vec <- vector(mode = 'numeric')
   coloring <- c("darkgoldenrod4", "slateblue", 'darksalmon',
                 'darkblue', 'navajowhite4',
                 'darkcyan', 'chocolate4',
-                "coral3","cornsilk4",'darkslateblue')
+                "coral3","cornsilk4",'darkslateblue')  # Define colors for each class
+
   for (i in 1:length(long[long$variable == 'Exp',4])) {
     col_vec[i] <- coloring[long[long$variable == 'Exp',4][i]]
   }
 
+  # Prepare labels for text display
   label.vec <- as.character(long[long$variable == 'Exp',4])
 
+  # Generate the probability heatmap
   prob.heatmap <- ggplot2::ggplot(mapping = ggplot2::aes(x = variable,
                                                          y = ordered(Name,
                                                                      levels = rev(factor(pro.df$Name,
                                                                                          levels = pro.df$Name))))) +
     ggplot2::geom_tile(data = long[long$variable != 'Exp',],
-                       color = 'black', ggplot2::aes(fill = value))+
-    ggplot2::coord_fixed(ratio = 0.2)+
+                       color = 'black', ggplot2::aes(fill = value)) +  # Add tiles for probabilities
+    ggplot2::coord_fixed(ratio = 0.5) +  # Adjust cell height with ratio
     ggplot2::geom_text(data = long[long$variable != 'Exp',],
-                       ggplot2::aes(label=value))+
+                       ggplot2::aes(label = value)) +  # Display probability values in each cell
     ggplot2::scale_fill_gradient(name = "% probability",
                                  low = "#FFFFFF",
                                  high = "dodgerblue2",
                                  guide = ggplot2::guide_colorbar(frame.colour = "black",
-                                                                 ticks.colour = "black"))+
-    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 10, face = 'bold',),
+                                                                 ticks.colour = "black")) +  # Set fill gradient for probabilities
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 10, face = 'bold'),
                    axis.text.y = ggplot2::element_text(size = 10, face = 'bold',
-                                                       colour = rev(verif$color)),
+                                                       colour = rev(verif$color)),  # Color y-axis labels by verification result
                    axis.title.y = ggplot2::element_blank(),
                    axis.title.x = ggplot2::element_blank(),
                    axis.line = ggplot2::element_blank(),
@@ -864,16 +885,18 @@ prob.heatmap <- function(model, data, plot.title, conformation) {
                    panel.grid.minor = ggplot2::element_blank(),
                    panel.border = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(),
-                   axis.ticks = ggplot2::element_blank())+
-    ggplot2::scale_x_discrete(position = "top",limits = levels(long$variable))+
+                   axis.ticks = ggplot2::element_blank(),
+                   legend.position = "bottom") +  # Place legend at bottom of plot
+    ggplot2::scale_x_discrete(position = "top", limits = levels(long$variable)) +  # Display x-axis labels at top
     ggplot2::geom_tile(data = long[long$variable == 'Exp',],
                        alpha = 0, inherit.aes = F,
-                       ggplot2::aes(x=rev(variable),
-                                    y=ordered(Name, levels =rev(factor(pro.df$Name,
-                                                                       levels = pro.df$Name)))))+
+                       ggplot2::aes(x = rev(variable),
+                                    y = ordered(Name, levels = rev(factor(pro.df$Name,
+                                                                          levels = pro.df$Name))))) +  # Add empty tiles for 'Exp' rows
     ggplot2::geom_text(data = long[long$variable == 'Exp',], label = label.vec,
-                       size = 4, color = col_vec, fontface = 'bold')
+                       size = 4, color = col_vec, fontface = 'bold')  # Display 'Exp' labels in bold
 
+  # Add titles and caption to the plot
   prob.heatmap + labs(title = plot.title,
                       subtitle = 'Probability Heatmap',
                       caption = conformation)
@@ -1133,5 +1156,147 @@ fit_polr <- function(formula, data) {
     }
   }
   return(test)
+}
+
+#' Clean Correlated Features Based on Multiple Criteria
+#'
+#' This function cleans up highly correlated features in a dataset using a user-defined threshold and a selection criterion.
+#' Users can choose to retain the feature with the higher correlation to the outcome, higher mutual information,
+#' higher feature importance from a random forest, or higher variance.
+#'
+#' @param data A data frame containing the features and outcome.
+#' @param outcome_col A character string specifying the name of the outcome column.
+#' @param corr_threshold A numeric value specifying the threshold for identifying highly correlated features. Defaults to 0.9.
+#' @param method A character string specifying the method to choose between correlated features. Options include:
+#'   \itemize{
+#'     \item \code{"correlation"}: Select based on higher absolute correlation with the outcome.
+#'     \item \code{"mutual_information"}: Select based on higher mutual information with the outcome.
+#'     \item \code{"feature_importance"}: Select based on higher feature importance from a random forest model.
+#'     \item \code{"variance"}: Select based on higher variance in the feature values.
+#'   }
+#'   Defaults to \code{"correlation"}.
+#' @param outcome_type A character string specifying the type of the outcome. Options are:
+#'   \itemize{
+#'     \item \code{"numeric"}: Use if the outcome is continuous.
+#'     \item \code{"categorical"}: Use if the outcome is categorical.
+#'     \item \code{"auto"}: Automatically detect the type of the outcome. Defaults to \code{"auto"}.
+#'   }
+#' @return A cleaned data frame where correlated features have been removed based on the chosen criterion.
+#'
+#' @details The function computes the correlation matrix for the input features and identifies pairs of features
+#' that exceed the specified correlation threshold. For each pair of correlated features, the function selects
+#' one feature to retain based on the selected \code{method}.
+#'
+#' - When using \code{"correlation"}, the function retains the feature with the higher absolute correlation to the outcome.
+#' - When using \code{"mutual_information"}, mutual information is computed to select the feature that provides more information about the outcome.
+#' - The \code{"feature_importance"} method fits a random forest model to calculate feature importance and selects the more important feature.
+#' - The \code{"variance"} method retains the feature with the higher variance.
+#'
+#' The function works with both numeric and categorical outcome variables. It automatically adjusts calculations
+#' based on the type of the outcome, which can be inferred by the function or specified by the user.
+#'
+#' @examples
+#' # Example 1: Using correlation to clean features (numeric outcome)
+#' data(iris)
+#' cleaned_data <- clean_correlated_features(data = iris, outcome_col = "Sepal.Length",
+#'                                           corr_threshold = 0.8, method = "correlation")
+#'
+#' # Example 2: Using mutual information to clean features (categorical outcome)
+#' iris$Species <- as.factor(iris$Species)
+#' cleaned_data <- clean_correlated_features(data = iris, outcome_col = "Species",
+#'                                           corr_threshold = 0.8, method = "mutual_information", outcome_type = "categorical")
+#'
+#' # Example 3: Using feature importance from a random forest (numeric outcome)
+#' cleaned_data <- clean_correlated_features(data = iris, outcome_col = "Sepal.Length",
+#'                                           corr_threshold = 0.8, method = "feature_importance")
+#'
+#' @export
+#' @importFrom randomForest randomForest importance
+#' @importFrom infotheo mutinformation discretize
+#' @importFrom stats cor var cor.test
+clean_correlated_features <- function(data, outcome_col = dim(data)[2], corr_threshold = 0.9, method = "correlation", outcome_type = "auto") {
+
+  # Extract the outcome column
+  outcome <- data[[outcome_col]]
+
+  # Determine outcome type if not provided explicitly
+  if (outcome_type == "auto") {
+    outcome_type <- if (is.factor(outcome) || is.character(outcome)) "categorical" else "numeric"
+  }
+
+  # Extract features, excluding the outcome column
+  features <- data[, -outcome_col]
+
+  # Compute correlation matrix for features
+  corr_matrix <- cor(features)
+
+  # Identify pairs of highly correlated features
+  high_corr_pairs <- which(abs(corr_matrix) > corr_threshold, arr.ind = TRUE)
+  high_corr_pairs <- high_corr_pairs[high_corr_pairs[, 1] != high_corr_pairs[, 2], ]
+
+  # Keep track of features to drop
+  drop_features <- c()
+
+  # Iterate over each correlated pair
+  for (i in 1:nrow(high_corr_pairs)) {
+    feat1 <- colnames(corr_matrix)[high_corr_pairs[i, 1]]
+    feat2 <- colnames(corr_matrix)[high_corr_pairs[i, 2]]
+
+    # Skip if either feature is already marked for dropping
+    if (feat1 %in% drop_features || feat2 %in% drop_features) next
+
+    if (method == "correlation") {
+      # Calculate correlation with the outcome (numeric or categorical)
+      if (outcome_type == "numeric") {
+        corr_feat1 <- abs(cor(features[, feat1], outcome))
+        corr_feat2 <- abs(cor(features[, feat2], outcome))
+      } else {
+        # For categorical outcome, use point-biserial correlation or a similar method
+        corr_feat1 <- abs(cor.test(as.numeric(outcome), features[, feat1])$estimate)
+        corr_feat2 <- abs(cor.test(as.numeric(outcome), features[, feat2])$estimate)
+      }
+
+    } else if (method == "mutual_information") {
+      # Calculate mutual information with the outcome
+      if (outcome_type == "numeric") {
+        mi_feat1 <- mutinformation(discretize(features[[feat1]]), discretize(outcome))
+        mi_feat2 <- mutinformation(discretize(features[[feat2]]), discretize(outcome))
+      } else {
+        # Categorical outcome - direct mutual information
+        mi_feat1 <- mutinformation(discretize(features[[feat1]]), as.factor(outcome))
+        mi_feat2 <- mutinformation(discretize(features[[feat2]]), as.factor(outcome))
+      }
+
+      corr_feat1 <- mi_feat1
+      corr_feat2 <- mi_feat2
+
+    } else if (method == "feature_importance") {
+      # Calculate feature importance using Random Forest
+      if (outcome_type == "numeric") {
+        model <- randomForest(x = features, y = outcome)
+      } else {
+        model <- randomForest(x = features, y = as.factor(outcome))
+      }
+
+      importance <- importance(model)
+      corr_feat1 <- importance[row.names(importance) == feat1, ]
+      corr_feat2 <- importance[row.names(importance) == feat2, ]
+
+    } else if (method == "variance") {
+      # Compare variance
+      corr_feat1 <- var(features[[feat1]])
+      corr_feat2 <- var(features[[feat2]])
+    }
+
+    # Drop the feature with the lower score
+    if (corr_feat1 < corr_feat2) {
+      drop_features <- c(drop_features, feat1)
+    } else {
+      drop_features <- c(drop_features, feat2)
+    }
+  }
+
+  # Return the cleaned dataset without the dropped features
+  return(data[, setdiff(names(data), drop_features), drop = FALSE])
 }
 
