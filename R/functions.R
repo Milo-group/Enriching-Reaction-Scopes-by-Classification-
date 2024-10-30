@@ -726,10 +726,10 @@ ct.plot <- function(class.table, plot.title, conformation) {
                                y = ordered(Exp, levels = rev(sort(unique(Exp)))),
                                fill = Legend,
                                alpha = prop)) +
-    geom_tile(color = 'black', size = 1.5) +  # Tile borders
+    geom_tile(color = 'black', size = 0.75) +  # Tile borders
     coord_fixed() +
     geom_text(aes(label = paste(Freq, "\n", '(', value, '%', ')', sep = '')),
-              size = 2.5, vjust = .5, fontface = "bold", alpha = 1) +  # Text labels on tiles
+              size = 3.35, vjust = .5, fontface = "bold", alpha = 1) +  # Text labels on tiles
     scale_fill_manual(values = c(True = '#6CAE75', False = '#8A0526',
                                  Size = '#FCDEBE', Precision = '#DCAB6B',
                                  Accuracy = '#247BA0'),
