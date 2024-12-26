@@ -1,7 +1,7 @@
 
 # Classify Chemical Reaction Conditions with the R Package `rxn.cond.class`
 
-`rxn.cond.class` is an R package designed to classify and visualize logistic regreesion classification models for chemical reaction conditions using both ordinal and non-ordinal models. It includes functionality for similarity-based sampling, model ranking, model evaluation, and heatmap visualization for model performance.
+`rxn.cond.class` is an R package designed to classify and visualize logistic regression classification models for chemical reaction conditions using both ordinal and non-ordinal models. It includes functionality for similarity-based sampling, model ranking, model evaluation, and heatmap visualization for model performance.
 
 ## Installation
 
