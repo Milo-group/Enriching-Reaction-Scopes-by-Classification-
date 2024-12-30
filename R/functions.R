@@ -1215,10 +1215,10 @@ fit_polr <- function(formula, data) {
 #' cleaned_data <- clean_correlated_features(data = iris, outcome_col = "Sepal.Length",
 #'                                           corr_threshold = 0.8, method = "feature_importance")
 #'
-#' @export
 #' @importFrom randomForest randomForest importance
 #' @importFrom infotheo mutinformation discretize
 #' @importFrom stats cor var cor.test
+#' @export
 clean_correlated_features <- function(data, outcome_col = dim(data)[2], corr_threshold = 0.9, method = "correlation", outcome_type = "auto") {
 
   # Extract the outcome column
