@@ -132,12 +132,14 @@ k.fold.log.iter(formula = test.form,
 
 ```r
 # Display model information and confusion matrix plot
-mod.info(test, Train.set, TRUE, TRUE)
+model.info <- mod.info(test, Train.set, TRUE, TRUE)
 
 # Classification table plot
-ct.plot(class.table, 
-        plot.title = 'Training Set', 
-        conformation = '1. 1st Place')
+confusion_matrix <- ct_plot(model.info$class.table, 
+                            plot.title = 'Training Set', 
+                            conformation = '1. 1st Place')
+
+confusion_matrix$plot
 
 # Prediction probability heatmap
 prob.heatmap(test, Train.set, 
@@ -149,12 +151,14 @@ prob.heatmap(test, Train.set,
 
 ```r
 # Evaluate the model on the test set
-mod.info(test, Test.set, FALSE, FALSE)
+model.info <- mod.info(test, Test.set, FALSE, FALSE)
 
 # Classification table plot
-ct.plot(class.table, 
-        plot.title = 'Test Set', 
-        conformation = '1. 1st Place')
+confusion_matrix <- ct_plot(model.info$class.table, 
+                            plot.title = 'Test Set', 
+                            conformation = '1. 1st Place')
+
+confusion_matrix$plot
 
 # Prediction probability heatmap
 prob.heatmap(test, Test.set, 
@@ -166,15 +170,17 @@ prob.heatmap(test, Test.set,
 
 ```r
 # Evaluate the model on the external validation set
-mod.info(test, Prediction.set, FALSE)
+model.info <- mod.info(test, External.set, FALSE)
 
 # Classification table plot
-ct.plot(class.table, 
-        plot.title = 'External Validation', 
-        conformation = '1. 1st Place')
+confusion_matrix <- ct_plot(model.info$class.table, 
+                            plot.title = 'External Validation', 
+                            conformation = '1. 1st Place')
+
+confusion_matrix$plot
 
 # Prediction probability heatmap
-prob.heatmap(test, Prediction.set, 
+prob.heatmap(test, External.set, 
              plot.title = 'External Validation', 
              conformation = '1. 1st Place')
 ```
@@ -228,12 +234,14 @@ k.fold.log.iter(formula = test.form,
 
 ```r
 # Display model information and confusion matrix plot
-mod.info(test, Train.set, TRUE, TRUE)
+model.info <- mod.info(test, Train.set, TRUE, TRUE)
 
 # Classification table plot
-ct.plot(class.table, 
-        plot.title = 'Training Set', 
-        conformation = '1. 1st Place')
+confusion_matrix <- ct_plot(model.info$class.table, 
+                            plot.title = 'Training Set', 
+                            conformation = '1. 1st Place')
+
+confusion_matrix$plot
 
 # Prediction probability heatmap
 prob.heatmap(test, Train.set, 
@@ -245,12 +253,14 @@ prob.heatmap(test, Train.set,
 
 ```r
 # Evaluate the model on the test set
-mod.info(test, Test.set, FALSE, FALSE)
+model.info <- mod.info(test, Test.set, FALSE, FALSE)
 
 # Classification table plot
-ct.plot(class.table, 
-        plot.title = 'Test Set', 
-        conformation = '1. 1st Place')
+confusion_matrix <- ct_plot(model.info$class.table, 
+                            plot.title = 'Test Set', 
+                            conformation = '1. 1st Place')
+
+confusion_matrix$plot
 
 # Prediction probability heatmap
 prob.heatmap(test, Test.set, 
@@ -262,24 +272,19 @@ prob.heatmap(test, Test.set,
 
 ```r
 # Evaluate the model on the external validation set
-mod.info(test, Prediction.set, FALSE)
+model.info <- mod.info(test, External.set, FALSE)
 
 # Classification table plot
-ct.plot(class.table, 
-        plot.title = 'External Validation', 
-        conformation = '1. 1st Place')
+confusion_matrix <- ct_plot(model.info$class.table, 
+                            plot.title = 'External Validation', 
+                            conformation = '1. 1st Place')
+
+confusion_matrix$plot
 
 # Prediction probability heatmap
-prob.heatmap(test, Prediction.set, 
+prob.heatmap(test, External.set, 
              plot.title = 'External Validation', 
              conformation = '1. 1st Place')
-```
-
-#### Prediction of New Substartes
-
-```r
-knitr::kable(cbind(predict(test, Prediction.set, 'probs') * 100,
-      predicted_class = predict(test, Prediction.set, 'class')))
 ```
 
 ## License
