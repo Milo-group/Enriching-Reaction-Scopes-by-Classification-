@@ -1,0 +1,11 @@
+"","formula","McFadden R2"
+"1","`class` ~ `L_1_SM` + `dip_y_SM` + `fr_halogen`",0.647
+"2","`class` ~ `NPA_1_P` + `dip_y_SM` + `fr_halogen`",0.645
+"3","`class` ~ `loc.B5_1_SM` + `dip_y_SM` + `fr_halogen`",0.627
+"4","`class` ~ `dip_y_P` + `dip_y_SM` + `fr_halogen`",0.626
+"5","`class` ~ `Total_P` + `fr_bicyclic` + `fr_halogen`",0.624
+"6","`class` ~ `NPA_4_P` + `dip_y_P` + `fr_halogen`",0.619
+"7","`class` ~ `L_1_SM` + `dip_y_SM` + `fr_aryl_methyl`",0.61
+"8","`class` ~ `Total_P` + `fr_ester` + `fr_halogen`",0.608
+"9","`class` ~ `NPA_7_SM` + `dip_y_SM` + `fr_halogen`",0.607
+"10","`class` ~ `dip_y_P` + `para_P` + `fr_halogen`",0.605
