@@ -5,33 +5,27 @@
 
 ## Installation
 
-To install the development version from GitHub, use:
+### Installation from Github 
+
+First, install the `remotes` package from CRAN.
+The `repos = getCRANmirrors()[1,"URL"]` addition helps installation in linux interactive sessions.
 
 ```r
-devtools::install_github("https://github.com/Milo-group/Enriching-Reaction-Scopes-by-Classification-.git")
-
-or
-
 install.packages('remotes', repos = getCRANmirrors()[1,"URL"])
-remotes::install_github("https://github.com/Milo-group/Enriching-Reaction-Scopes-by-Classification-.git")
 ```
 
-Load package
+Once `remotes` is properly installed, use the `install_github` function to install `rxn.con.class`.
+For convenience, load the package.
 
 ```r
-library(rxn.cond.class)
+# Install
+remotes::install_github('https://github.com/barkais/rxn.cond.class.git')
+
+# Load
+library('rxn.con.class')
 ```
 
-## Package Overview
-
-`rxn.cond.class` provides several functions for classification, probability analysis, data sampling, and model evaluation with a focus on reaction condition classification.
-
-### Key Features
-
-- **Similarity-based sampling**: Select representative samples based on class-specific feature vectors.
-- **Model Ranking**: Compare ordinal and non-ordinal models based on performance.
-- **Model Evaluation**: Evaluate models with cross-validation, accuracy, and McFadden's pseudo-R².
-- **Heatmap Visualization**: Visualize prediction probabilities and classification tables.
+### Package overview and Information can be found on the pakcage GitHub page. 
 
 ## Example Usage
 
