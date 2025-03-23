@@ -25,7 +25,7 @@ remotes::install_github('https://github.com/barkais/rxn.cond.class.git')
 library('rxn.con.class')
 ```
 
-### Package overview and Information can be found on the pakcage GitHub page. 
+### Package overview and Information can be found on the pakcage [GitHub page](https://github.com/barkais/rxn.cond.class/tree/main). 
 
 ## Example Usage
 
