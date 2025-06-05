@@ -22,7 +22,7 @@ For convenience, load the package.
 remotes::install_github('https://github.com/barkais/rxn.cond.class.git')
 
 # Load
-library('rxn.con.class')
+library('rxn.cond.class')
 ```
 
 ### Package overview and Information can be found on the pakcage [GitHub page](https://github.com/barkais/rxn.cond.class/tree/main). 
