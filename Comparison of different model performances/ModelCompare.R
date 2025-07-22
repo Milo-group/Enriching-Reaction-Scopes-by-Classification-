@@ -57,14 +57,14 @@ External.set <-data.frame(class=External$class,External.set)
 
 # NNet (neural network) ---------------------------------------------------
 
-# Hyperparameter tunning through Grid search using the "tune" function with 10-fold cross validation.
-
 set.seed(1000)
 
 nnet_scan=tune.nnet(class ~., data = Train.set, size = seq(20, 40, 1), 
                 decay = seq(0, 1, 0.01),
                 linout = F, trace = F, maxit = 1000, 
                 tunecontrol = tune.control(cross = 10, best.model = T))
+
+# Tunning size and scan features of the nnet function with 10-fold cross validation.
 
 bestSize = nnet_scan$best.parameters[1,1]
 bestDecay = nnet_scan$best.parameters[1,2]
