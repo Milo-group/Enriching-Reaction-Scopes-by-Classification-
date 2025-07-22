@@ -3,4 +3,4 @@ This feature was identified as a base descriptor in the work by Doyle and cowork
 As a result, only substrate-related features are retained.
 For each one of the sulfonyls we provided a dataset under the name  ```Sulfonyl_XX_final.csv ``` with XX being the type of sulfonyl. 
 In the data set the tags of the molecules and the Inchies for each molecule is supplied along with all the features and the class output.
-
+The R file ```Model Construction_Deoxyfluorination_Nobase.R``` supplies the code to reproduce our results as reported in the SI.
