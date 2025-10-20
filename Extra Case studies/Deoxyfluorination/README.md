@@ -1,2 +1,2 @@
- In this folder there are two folder containing the date without Hot One Encoded (HOE) vectors or without HOE vectors and without a base feature.
+ In this folder thereis one folder containing the data without OHE vectors and without a base feature.
 This folder also contains the full, undivided raw data:  ```UnitedData_Deoxy.csv```
