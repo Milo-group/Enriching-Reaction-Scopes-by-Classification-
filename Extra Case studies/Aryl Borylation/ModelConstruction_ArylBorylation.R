@@ -7,7 +7,7 @@ remotes::install_github('barkais/rxn.cond.class', force = TRUE)
 library('rxn.cond.class')
 
 # Load data
-ArylBorylation <- read.csv('Doyle_data_organized_for_classification.csv')
+ArylBorylation <- read.csv('Stevens_data_organized_for_classification.csv')
 rownames(ArylBorylation) <- ArylBorylation[,162]
 ArylBorylation <- ArylBorylation[,-c(27,28,159:164)] # Removes names and smiles
 ArylBorylation <- ArylBorylation[,-c(116,117)] #removel of all zero column
@@ -114,3 +114,4 @@ confusion_matrix$plot
 prob.heatmap(test, Test.data, 
              plot.title = 'Test Set', 
              conformation = '1. 1st Place')
+
